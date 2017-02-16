@@ -1,20 +1,23 @@
-Stripe.setPublishableKey('UPDATE ME');
+Stripe.setPublishableKey('pk_test_n61exhWO34qNqG8ws1HU7IMq');
 
 $(document).on('ready', function() {
   $('form-errors').hide();
 });
 
-$('#product-form').on('submit', function(event){
+$('#payment-form').on('submit', function(event){
 
   event.preventDefault();
 
   $('form-errors').hide();
 
   Stripe.card.createToken({
-    number: $('#card-number').val(),
-    cvc: $('#cvv').val(),
-    exp_month: $('#expiry-month').val(),
-    exp_year: $('#expiry-year').val()
+    number: $('#cardNumber').val(),
+    cvc: $('#cardCVC').val(),
+    // exp_month: $('#expiry-month').val(),
+    // exp_year: $('#expircardExpiryy-year').val()
+    exp: $('#cardExpiry').val(),
+    name: $("name").val(),
+    address_zip: $("couponCode").val()
   }, stripeResponseHandler);
 
   $('#submit-btn').prop("disabled", true);
@@ -22,13 +25,16 @@ $('#product-form').on('submit', function(event){
 });
 
 function stripeResponseHandler(status, response) {
-  var $form = $('#product-form');
+  var $form = $('#payment-form');
   if (response.error) {
     // Show the errors on the form
     $('#form-errors').show();
     $('#form-errors').html(response.error.message);
     $('#submit-btn').prop("disabled", false);
+    console.log(response.error.message);
+    console.log('There is an error');
   } else {
+    console.log('charge being submitted');
     // response contains id and card, which contains additional card details
     var token = response.id;
     // Insert the token into the form so it gets submitted to the server
